@@ -24,7 +24,7 @@ export class Topaz {
     logger.debug(`topaz start with ${certsDir}`);
 
     const directoryClient = DirectoryServiceV3({
-      url: "localhost:9292",
+      url: "https://localhost:9292",
       caFile: certsDir,
     });
     await retry(

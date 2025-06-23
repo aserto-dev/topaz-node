@@ -1,8 +1,9 @@
 import * as fs from "fs";
 import { describe } from "node:test";
+
 import { Code, ConnectError } from "@connectrpc/connect";
-import { createAsyncIterable } from "@connectrpc/connect/protocol";
 import * as connectNode from "@connectrpc/connect-node";
+import { createAsyncIterable } from "@connectrpc/connect/protocol";
 
 import {
   CheckResponseSchema,
@@ -34,7 +35,7 @@ jest.mock("fs");
 
 describe("DirectoryV3", () => {
   const config = {
-    url: "example.com",
+    url: "https://example.com",
     tenantId: "tenantId",
     apiKey: "apiKey",
   };
@@ -42,7 +43,7 @@ describe("DirectoryV3", () => {
 
   it("creates an instance of DirectoryV3 with valid config", () => {
     const config = {
-      url: "example.com",
+      url: "https://example.com",
       tenantId: "tenantId",
       apiKey: "apiKey",
       customHeaders: {
@@ -68,7 +69,7 @@ describe("DirectoryV3", () => {
       });
 
     const config = {
-      url: "directory.prod.aserto.com:8443",
+      url: "https://localhost:9292",
       tenantId: "tenantId",
       apiKey: "apiKey",
       caFile: "caFile",
@@ -76,7 +77,7 @@ describe("DirectoryV3", () => {
         base: "bar",
       },
       reader: {
-        url: "readerUrl",
+        url: "https://readerUrl",
         apiKey: "readerApiKey",
         tenantId: "readerTenantId",
         caFile: "readerCaFile",
@@ -85,7 +86,7 @@ describe("DirectoryV3", () => {
         },
       },
       writer: {
-        url: "writerUrl",
+        url: "https://writerUrl",
         apiKey: "writerApiKey",
         tenantId: "writerTenantId",
         customHeaders: {
@@ -93,7 +94,7 @@ describe("DirectoryV3", () => {
         },
       },
       importer: {
-        url: "importerUrl",
+        url: "https://importerUrl",
         apiKey: "importerApiKey",
         tenantId: "importerTenantId",
       },
@@ -113,7 +114,7 @@ describe("DirectoryV3", () => {
     expect(mockTransport.mock.calls).toEqual([
       [
         expect.objectContaining({
-          baseUrl: "https://directory.prod.aserto.com:8443",
+          baseUrl: "https://localhost:9292",
           interceptors: [expect.any(Function)],
           nodeOptions: {
             ca: "caFile",
@@ -153,7 +154,7 @@ describe("DirectoryV3", () => {
       ],
       [
         expect.objectContaining({
-          baseUrl: "https://directory.prod.aserto.com:8443",
+          baseUrl: "https://localhost:9292",
           interceptors: [expect.any(Function), expect.any(Function)],
           nodeOptions: {
             ca: "exporterCaFile",
@@ -163,7 +164,7 @@ describe("DirectoryV3", () => {
       ],
       [
         expect.objectContaining({
-          baseUrl: "https://directory.prod.aserto.com:8443",
+          baseUrl: "https://localhost:9292",
           interceptors: [expect.any(Function), expect.any(Function)],
           nodeOptions: {
             ca: "caFile",
@@ -186,7 +187,7 @@ describe("DirectoryV3", () => {
 
   it("handles same config for multiple services", () => {
     const config = {
-      url: "directory.prod.aserto.com:8443",
+      url: "localhost:9292",
       tenantId: "tenantId",
       apiKey: "apiKey",
       reader: {
@@ -259,7 +260,7 @@ describe("DirectoryV3", () => {
       expect(mockTransport.mock.calls).toEqual([
         [
           expect.objectContaining({
-            baseUrl: "https://directory.prod.aserto.com:8443",
+            baseUrl: "https://localhost:9292",
             nodeOptions: { rejectUnauthorized: true },
           }),
         ],
@@ -278,7 +279,7 @@ describe("DirectoryV3", () => {
 
       const directory = DirectoryServiceV3({
         reader: {
-          url: "readerurl",
+          url: "https://readerurl",
           tenantId: "tenantId",
           apiKey: "apiKey",
         },

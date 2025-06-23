@@ -131,8 +131,6 @@ export enum ImportMsgCase {
  */
 type DATA_TYPE_OPTIONS = keyof ExportOptions;
 
-const ADDRESS_REGEX = /https?:\/\//;
-
 export class DirectoryV3 {
   ReaderClient: Client<typeof Reader>;
   WriterClient: Client<typeof Writer>;
@@ -188,13 +186,6 @@ export class DirectoryV3 {
       );
     };
 
-    const getServiceUrl = (baseServiceUrl: string) => {
-      const scheme = "https://";
-
-      const serviceUrlMatch = baseServiceUrl?.match(ADDRESS_REGEX);
-      return serviceUrlMatch ? baseServiceUrl : `${scheme}${baseServiceUrl}`;
-    };
-
     const createTransport = (
       config: ServiceConfig | undefined,
       fallback: ServiceConfig | undefined,
@@ -202,7 +193,6 @@ export class DirectoryV3 {
       if (!validConfig(config, fallback)) {
         return;
       }
-
       const serviceUrl = config?.url || fallback?.url;
       const apiKey = config?.apiKey || fallback?.apiKey;
       const tenantId = config?.tenantId || fallback?.tenantId;
@@ -222,9 +212,7 @@ export class DirectoryV3 {
         }
         interceptors.push(setCustomHeaders(customHeaders));
         return createGrpcTransport({
-          baseUrl: getServiceUrl(
-            serviceUrl || "directory.prod.aserto.com:8443",
-          ),
+          baseUrl: serviceUrl || "https://localhost:9292",
           interceptors: interceptors,
           nodeOptions: nodeOptions,
         });
@@ -268,7 +256,7 @@ export class DirectoryV3 {
     const baseGrpcTransport =
       !!config.url || (!!config.apiKey && !!config.tenantId)
         ? createGrpcTransport({
-            baseUrl: getServiceUrl(baseServiceUrl!),
+            baseUrl: baseServiceUrl || "https://localhost:9292",
             interceptors: interceptors,
             nodeOptions: baseNodeOptions,
           })

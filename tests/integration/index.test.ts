@@ -25,7 +25,7 @@ describe("Integration", () => {
     topaz = new Topaz();
     await topaz.start();
     const config = {
-      url: "localhost:9292",
+      url: "https://localhost:9292",
       caFile: await topaz.caCert(),
     };
 
@@ -41,7 +41,7 @@ describe("Integration", () => {
     it("fallsback to reader proxy when reader is not configured", async () => {
       const readerClient = DirectoryServiceV3({
         writer: {
-          url: "localhost:9292",
+          url: "https://localhost:9292",
           caFile: await topaz.caCert(),
         },
       });
@@ -59,7 +59,7 @@ describe("Integration", () => {
 
   describe("Directory", () => {
     const manifest = `
-# yaml-language-server: $schema=https://www.topaz.sh/schema/manifest.json
+# yaml-language-server: $schema=httpss://www.topaz.sh/schema/manifest.json
 ---
 ### model ###
 model:
@@ -695,7 +695,7 @@ types:
 
       it("allows a custom logger", async () => {
         const config = {
-          url: "localhost:9292",
+          url: "https://localhost:9292",
           caFile: await topaz.caCert(),
         };
 
