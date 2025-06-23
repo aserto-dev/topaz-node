@@ -16,6 +16,8 @@
     "check": "tsc --noEmit",
     "detect-unused-exports": "knip --include exports,types,nsExports,nsTypes",
     "lint": "eslint src --max-warnings=0",
+    "prepare": "yarn run build",
+    "prepack": "NODE_ENV=production yarn build",
     "test": "jest test --coverage --verbose --collectCoverageFrom='./src/**'"
   },
   "devDependencies": {
