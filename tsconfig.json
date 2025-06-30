@@ -20,6 +20,6 @@
     "declaration": true,
     "lib": ["esnext"],
   },
-  "exclude": ["./node_modules"],
+  "exclude": ["./node_modules", "tests"],
   "include": ["src/**/*.ts"]
 }
