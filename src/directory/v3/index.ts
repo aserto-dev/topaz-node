@@ -228,9 +228,6 @@ export class DirectoryV3 {
     };
 
     let rejectUnauthorized = true;
-    if (config.rejectUnauthorized !== undefined) {
-      rejectUnauthorized = config.rejectUnauthorized;
-    }
 
     if (config.insecure !== undefined) {
       rejectUnauthorized = !config.insecure;

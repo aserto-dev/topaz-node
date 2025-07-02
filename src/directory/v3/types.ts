@@ -274,7 +274,6 @@ export type ServiceConfig = {
   apiKey?: string;
   token?: string;
   caFile?: string;
-  rejectUnauthorized?: boolean;
   insecure?: boolean;
   customHeaders?: CustomHeaders;
 };
