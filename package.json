@@ -1,0 +1,46 @@
+{
+  "name": "topaz-node",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "Topaz Node SDK",
+  "license": "MIT",
+  "dependencies": {
+    "@aserto/node-authorizer": "^0.21.0",
+    "@aserto/node-directory": "^0.33.1",
+    "@connectrpc/connect": "^2.0.2",
+    "@connectrpc/connect-node": "^2.0.2"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --build",
+    "check": "tsc --noEmit",
+    "detect-unused-exports": "knip --include exports,types,nsExports,nsTypes",
+    "lint": "eslint src --max-warnings=0",
+    "prepare": "yarn run build",
+    "prepack": "NODE_ENV=production yarn build",
+    "test": "jest test --coverage --verbose --collectCoverageFrom='./src/**'"
+  },
+  "devDependencies": {
+    "@bufbuild/protobuf": "^2.5.2",
+    "@eslint/compat": "^1.3.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.29.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-perfectionist": "^4.15.0",
+    "eslint-plugin-prettier": "^5.5.0",
+    "jest": "30.0.1",
+    "knip": "^5.61.2",
+    "pino": "^9.7.0",
+    "prettier": "^3.5.3",
+    "pretty-format": "^30.0.1",
+    "supertest": "^7.1.1",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "yarn@4.9.2"
+}
