@@ -4,6 +4,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+
 jobs:
   release:
     runs-on: ubuntu-latest
