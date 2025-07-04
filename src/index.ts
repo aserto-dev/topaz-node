@@ -8,6 +8,7 @@ import {
 } from "./directory/v3";
 import { DsRegistry } from "./directory/v3/serializer";
 import { Opcode } from "./directory/v3/types";
+import { handleError } from "./util/connect";
 import {
   getLogEventEmitter,
   LOG_EVENT,
@@ -21,6 +22,7 @@ export {
   DirectoryV3,
   DsRegistry,
   getLogEventEmitter,
+  handleError,
   ImportMsgCase,
   Opcode as ImportOpCode,
   LOG_EVENT,
