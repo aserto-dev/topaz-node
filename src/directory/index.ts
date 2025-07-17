@@ -52,7 +52,7 @@ import {
   setCustomHeaders,
   setHeader,
   traceMessage,
-} from "../../util/connect";
+} from "../util/connect";
 import {
   nullExporterProxy,
   nullImporterProxy,
@@ -71,7 +71,7 @@ import {
   DeleteObjectResponse,
   DeleteRelationRequest,
   DeleteRelationResponse,
-  DirectoryV3Config,
+  DirectoryConfig,
   ExportOptions,
   ExportResponse,
   GetGraphRequest,
@@ -131,7 +131,7 @@ export enum ImportMsgCase {
  */
 type DATA_TYPE_OPTIONS = keyof ExportOptions;
 
-export class DirectoryV3 {
+export class Directory {
   ReaderClient: Client<typeof Reader>;
   WriterClient: Client<typeof Writer>;
   ImporterClient: Client<typeof Importer>;
@@ -144,7 +144,7 @@ export class DirectoryV3 {
     fallback: ServiceConfig | undefined,
   ) => Transport | undefined;
 
-  constructor(config: DirectoryV3Config) {
+  constructor(config: DirectoryConfig) {
     const baseServiceHeaders: Interceptor = (next) => async (req) => {
       config.token && setHeader(req, "authorization", `${config.token}`);
       config.apiKey &&
@@ -672,13 +672,3 @@ function mergeUint8Arrays(...arrays: Uint8Array[]): Uint8Array {
 
   return merged;
 }
-
-/**
- * Creates a new instance of the DirectoryV3 class.
- *
- * @param {DirectoryV3Config} config - The configuration object for initializing the DirectoryV3 instance.
- * @returns {DirectoryV3} A new instance of the DirectoryV3 class.
- */
-export const DirectoryServiceV3 = (config: DirectoryV3Config): DirectoryV3 => {
-  return new DirectoryV3(config);
-};

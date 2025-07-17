@@ -13,8 +13,7 @@ import {
   DeleteManifestResponseSchema,
   DeleteObjectResponseSchema,
   DeleteRelationResponseSchema,
-  DirectoryServiceV3,
-  DirectoryV3,
+  Directory,
   EtagMismatchError,
   ExportResponseSchema,
   GetGraphResponseSchema,
@@ -33,15 +32,15 @@ import {
 } from "../../../src";
 jest.mock("fs");
 
-describe("DirectoryV3", () => {
+describe("Directory", () => {
   const config = {
     url: "https://example.com",
     tenantId: "tenantId",
     apiKey: "apiKey",
   };
-  const directory = DirectoryServiceV3(config);
+  const directory = new Directory(config);
 
-  it("creates an instance of DirectoryV3 with valid config", () => {
+  it("creates an instance of Directory with valid config", () => {
     const config = {
       url: "https://example.com",
       tenantId: "tenantId",
@@ -50,9 +49,9 @@ describe("DirectoryV3", () => {
         foo: "bar",
       },
     };
-    const directory = DirectoryServiceV3(config);
+    const directory = new Directory(config);
 
-    expect(directory).toBeInstanceOf(DirectoryV3);
+    expect(directory).toBeInstanceOf(Directory);
     expect(directory.ReaderClient).toBeDefined();
     expect(directory.WriterClient).toBeDefined();
     expect(directory.ImporterClient).toBeDefined();
@@ -109,7 +108,7 @@ describe("DirectoryV3", () => {
       rejectUnauthorized: true,
     };
 
-    const directory = DirectoryServiceV3(config);
+    const directory = new Directory(config);
 
     expect(mockTransport.mock.calls).toEqual([
       [
@@ -174,7 +173,7 @@ describe("DirectoryV3", () => {
       ],
     ]);
 
-    expect(directory).toBeInstanceOf(DirectoryV3);
+    expect(directory).toBeInstanceOf(Directory);
     expect(directory.ReaderClient).toBeDefined();
     expect(directory.WriterClient).toBeDefined();
     expect(directory.ImporterClient).toBeDefined();
@@ -209,9 +208,9 @@ describe("DirectoryV3", () => {
       },
     };
 
-    const directory = DirectoryServiceV3(config);
+    const directory = new Directory(config);
 
-    expect(directory).toBeInstanceOf(DirectoryV3);
+    expect(directory).toBeInstanceOf(Directory);
     expect(directory.ReaderClient).toBeDefined();
     expect(directory.WriterClient).toBeDefined();
     expect(directory.ImporterClient).toBeDefined();
@@ -228,12 +227,12 @@ describe("DirectoryV3", () => {
           return path as string;
         });
 
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         tenantId: "tenantId",
         apiKey: "apiKey",
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ReaderClient).toBeDefined();
 
       mockFs.mockReset();
@@ -248,14 +247,14 @@ describe("DirectoryV3", () => {
           return path as string;
         });
 
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           tenantId: "tenantId",
           apiKey: "apiKey",
         },
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ReaderClient).toBeDefined();
       expect(mockTransport.mock.calls).toEqual([
         [
@@ -277,7 +276,7 @@ describe("DirectoryV3", () => {
           return path as string;
         });
 
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           url: "https://readerurl",
           tenantId: "tenantId",
@@ -285,7 +284,7 @@ describe("DirectoryV3", () => {
         },
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ReaderClient).toBeDefined();
       expect(mockTransport.mock.calls).toEqual([
         [
@@ -299,7 +298,7 @@ describe("DirectoryV3", () => {
     });
 
     describe("when config is missing", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         writer: {
           tenantId: "tenantId",
           apiKey: "apiKey",
@@ -320,17 +319,17 @@ describe("DirectoryV3", () => {
 
   describe("Writer", () => {
     it("inherits base config", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         tenantId: "tenantId",
         apiKey: "apiKey",
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.WriterClient).toBeDefined();
     });
 
     describe("when config is missing", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           tenantId: "tenantId",
           apiKey: "apiKey",
@@ -349,17 +348,17 @@ describe("DirectoryV3", () => {
 
   describe("Importer", () => {
     it("inherits base config", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         tenantId: "tenantId",
         apiKey: "apiKey",
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ImporterClient).toBeDefined();
     });
 
     describe("when config is missing", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           tenantId: "tenantId",
           apiKey: "apiKey",
@@ -380,17 +379,17 @@ describe("DirectoryV3", () => {
 
   describe("Exporter", () => {
     it("inherits base config", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         tenantId: "tenantId",
         apiKey: "apiKey",
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ExporterClient).toBeDefined();
     });
 
     describe("when config is missing", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           tenantId: "tenantId",
           apiKey: "apiKey",
@@ -411,17 +410,17 @@ describe("DirectoryV3", () => {
 
   describe("Model", () => {
     it("inherits base config", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         tenantId: "tenantId",
         apiKey: "apiKey",
       });
 
-      expect(directory).toBeInstanceOf(DirectoryV3);
+      expect(directory).toBeInstanceOf(Directory);
       expect(directory.ModelClient).toBeDefined();
     });
 
     describe("when config is missing", () => {
-      const directory = DirectoryServiceV3({
+      const directory = new Directory({
         reader: {
           tenantId: "tenantId",
           apiKey: "apiKey",

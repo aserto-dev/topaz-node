@@ -22,7 +22,7 @@ import {
 import { GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 
-import { InvalidSchemaError } from "../../util/errors";
+import { InvalidSchemaError } from "../util/errors";
 
 class DsRegistry {
   registry: Registry;

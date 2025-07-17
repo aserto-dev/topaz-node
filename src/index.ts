@@ -1,14 +1,13 @@
 import { Authorizer } from "./authorizer";
 import {
   createImportRequest,
-  DirectoryServiceV3,
-  DirectoryV3,
+  Directory,
   ImportMsgCase,
   readAsyncIterable,
   serializeAsyncIterable,
-} from "./directory/v3";
-import { DsRegistry } from "./directory/v3/serializer";
-import { Opcode } from "./directory/v3/types";
+} from "./directory";
+import { DsRegistry } from "./directory/serializer";
+import { Opcode } from "./directory/types";
 import { handleError } from "./util/connect";
 import {
   getLogEventEmitter,
@@ -20,8 +19,7 @@ import {
 export {
   Authorizer,
   createImportRequest,
-  DirectoryServiceV3,
-  DirectoryV3,
+  Directory,
   DsRegistry,
   getLogEventEmitter,
   handleError,
@@ -35,6 +33,6 @@ export {
 };
 
 export * from "./authorizer/types";
-export * from "./directory/v3/types";
+export * from "./directory/types";
 export * from "./util/errors";
 export * from "@bufbuild/protobuf";

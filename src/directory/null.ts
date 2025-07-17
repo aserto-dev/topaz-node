@@ -5,7 +5,7 @@ import { Reader } from "@aserto/node-directory/src/gen/cjs/aserto/directory/read
 import { Writer } from "@aserto/node-directory/src/gen/cjs/aserto/directory/writer/v3/writer_pb";
 import { Client } from "@connectrpc/connect";
 
-import { ConfigError } from "../../util/errors";
+import { ConfigError } from "../util/errors";
 
 type ConnectClient =
   | typeof Exporter

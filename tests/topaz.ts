@@ -1,7 +1,7 @@
 import fs from "fs";
 import util from "node:util";
 
-import { DirectoryServiceV3 } from "../src";
+import { Directory } from "../src";
 import { logger } from "../src/util/log";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -23,7 +23,7 @@ export class Topaz {
 
     logger.debug(`topaz start with ${certsDir}`);
 
-    const directoryClient = DirectoryServiceV3({
+    const directoryClient = new Directory({
       url: "https://localhost:9292",
       caFile: certsDir,
     });

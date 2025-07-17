@@ -7,7 +7,7 @@ import {
   UnaryRequest,
 } from "@connectrpc/connect";
 
-import { CustomHeaders } from "../directory/v3/types";
+import { CustomHeaders } from "../directory/types";
 import {
   EtagMismatchError,
   InvalidArgumentError,

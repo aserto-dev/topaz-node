@@ -16,7 +16,7 @@ type ServiceConfig = {
   customHeaders?: { [key: string]: unknown };
 };
 
-export type DirectoryV3Config = ServiceConfig & {
+export type DirectoryConfig = ServiceConfig & {
   reader?: ServiceConfig;
   writer?: ServiceConfig;
   importer?: ServiceConfig;
@@ -28,9 +28,9 @@ export type DirectoryV3Config = ServiceConfig & {
 You can initialize a directory client as follows:
 
 ```typescript
-import { DirectoryServiceV3 } from "@aserto/aserto-node";
+import { Directory } from "@aserto/aserto-node";
 
-const directoryClient = DirectoryServiceV3({
+const directoryClient = new Directory({
   url: 'localhost:9292',
   caFile: `${process.env.HOME}/.local/share/topaz/certs/grpc-ca.crt`
 });
@@ -50,9 +50,9 @@ const directoryClient = DirectoryServiceV3({
 #### Example
 Define a writer client that uses the same credentials but connects to localhost:9393. All other services will have the default configuration
 ```ts
-import { DirectoryServiceV3 } from "@aserto/aserto-node";
+import { Directory } from "@aserto/aserto-node";
 
-const directoryClient = DirectoryServiceV3({
+const directoryClient = new Directory({
   url: 'localhost:9292',
   tenantId: '1234',
   apiKey: 'my-api-key',

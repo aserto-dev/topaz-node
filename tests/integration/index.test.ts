@@ -6,8 +6,7 @@ import {
   Authorizer,
   ConfigError,
   createImportRequest,
-  DirectoryServiceV3,
-  DirectoryV3,
+  Directory,
   IdentityType,
   ImportMsgCase,
   ImportOpCode,
@@ -20,7 +19,7 @@ import {
 import { Topaz, TOPAZ_TIMEOUT } from "../topaz";
 
 describe("Integration", () => {
-  let directoryClient: DirectoryV3;
+  let directoryClient: Directory;
   let topaz: Topaz;
 
   beforeAll(async () => {
@@ -31,7 +30,7 @@ describe("Integration", () => {
       caFile: await topaz.caCert(),
     };
 
-    directoryClient = DirectoryServiceV3(config);
+    directoryClient = new Directory(config);
   }, TOPAZ_TIMEOUT);
 
   afterAll(async () => {
@@ -41,7 +40,7 @@ describe("Integration", () => {
 
   describe("Directory Reader", () => {
     it("fallsback to reader proxy when reader is not configured", async () => {
-      const readerClient = DirectoryServiceV3({
+      const readerClient = new Directory({
         writer: {
           url: "https://localhost:9292",
           caFile: await topaz.caCert(),
@@ -701,7 +700,7 @@ types:
           caFile: await topaz.caCert(),
         };
 
-        const directory = DirectoryServiceV3(config);
+        const directory = new Directory(config);
         directory.objects({ objectType: "user" });
       });
     });

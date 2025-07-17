@@ -57,7 +57,7 @@ import {
 } from "@bufbuild/protobuf";
 import { Timestamp } from "@bufbuild/protobuf/wkt";
 
-import { NestedOmit, NestedOptional, Optional } from "../../util/types";
+import { NestedOmit, NestedOptional, Optional } from "../util/types";
 
 // export service types
 export * from "@aserto/node-directory/src/gen/cjs/aserto/directory/common/v3/common_pb";
@@ -123,7 +123,7 @@ export type DeleteRelationResponse = Omit<
   "$typeName" | "$unknown"
 >;
 
-export type DirectoryV3Config = ServiceConfig & {
+export type DirectoryConfig = ServiceConfig & {
   additionalDescriptors?: (
     | DescEnum
     | DescExtension
