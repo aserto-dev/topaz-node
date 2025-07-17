@@ -14,7 +14,6 @@ type ServiceConfig = {
   caFile?: string;
   insecure?: boolean;
   customHeaders?: { [key: string]: unknown };
-
 };
 
 export type DirectoryV3Config = ServiceConfig & {
@@ -383,3 +382,153 @@ const objects = await directoryClient.objects({objectType: "user"});
 const json = toJson(GetObjectsResponseSchema, objects)
 ```
 
+
+## Authorizer
+
+### Authorizer Client
+```ts
+interface Authorizer {
+  config: AuthorizerConfig,
+};
+
+type AuthorizerConfig = {
+  authorizerServiceUrl?: string;
+  tenantId?: string;
+  authorizerApiKey?: string;
+  token?: string;
+  caFile?: string;
+  insecure?: boolean;
+  customHeaders?: { [key: string]: unknown };
+
+};
+```
+```ts
+const authClient = new Authorizer({
+  authorizerServiceUrl: "localhost:8282",
+  caFile: `${process.env.HOME}/.local/share/topaz/certs/grpc-ca.crt`
+});
+```
+
+- `authorizerServiceUrl`: hostname:port of authorizer service (_required_)
+- `authorizerApiKey`: API key for authorizer service (_required_ if using hosted authorizer)
+- `tenantId`: Aserto tenant ID (_required_ if using hosted authorizer)
+- `caFile`: Path to the authorizer CA file. (optional)
+- `insecure`: Skip server certificate and domain verification. (NOT SECURE!). Defaults to `false`.
+
+#### Example:
+```ts
+import {
+  Authorizer,
+  identityContext,
+  policyContext,
+  policyInstance,
+} from "@aserto/aserto-node";
+
+const authClient = new Authorizer(
+  {
+    authorizerServiceUrl: "localhost:8282",
+    caFile: `${process.env.HOME}/.local/share/topaz/certs/grpc-ca.crt`
+  },
+);
+
+authClient
+  .Is({
+    identityContext: {
+      identity: "rick@the-citadel.com",
+      type: IdentityType.SUB,
+    },
+    policyInstance: {
+      name: "rebac",
+    },
+    policyContext: {
+      path: "rebac.check",
+      decisions: ["allowed"],
+    },
+    resourceContext: {
+      object_type: "group",
+      object_id: "evil_genius",
+      relation: "member",
+    },
+  })
+```
+
+### Methods
+```ts
+// Is
+// (method) Authorizer.Is(params: IsRequest, options?: CallOptions): Promise<boolean>
+await authClient
+  .Is({
+    identityContext: {
+      identity: "rick@the-citadel.com",
+      type: IdentityType.SUB,
+    },
+    policyInstance: {
+      name: "todo",
+    },
+    policyContext: {
+      path: "todoApp.POST.todos",
+      decisions: ["allowed"],
+    },
+    resourceContext: {
+      ownerID: "fd1614d3-c39a-4781-b7bd-8b96f5a5100d",
+    },
+  })
+
+// Query
+// (method) Authorizer.Query(params: QueryRequest, options?: CallOptions): Promise<JsonObject>
+await authClient
+  .Query({
+    identityContext: {
+      identity: "rick@the-citadel.com",
+      type: IdentityType.SUB,
+    },
+    policyInstance: {
+      name: "todo",
+    },
+    policyContext: {
+      path: "todoApp.POST.todos",
+      decisions: ["allowed"],
+    },
+    resourceContext: {
+      ownerID: "fd1614d3-c39a-4781-b7bd-8b96f5a5100d",
+    },
+    query: "x = data",
+  })
+
+
+// DecisionTree
+// (method) Authorizer.DecisionTree(params: DecisionTreeRequest, options?: CallOptions): Promise<{
+//     path: Path;
+//     pathRoot: string;
+// }>
+await authClient
+  .DecisionTree({
+    identityContext: {
+      identity: "rick@the-citadel.com",
+      type: IdentityType.SUB,
+    },
+    policyInstance: {
+      name: "todo",
+    },
+    policyContext: {
+      path: "todoApp.POST.todos",
+      decisions: ["allowed"],
+    },
+    resourceContext: {
+      ownerID: "fd1614d3-c39a-4781-b7bd-8b96f5a5100d",
+    },
+  })
+
+
+// ListPolicies
+// (method) Authorizer.ListPolicies(params: PlainMessage<ListPoliciesRequest>, options?: CallOptions): Promise<Module[]>
+await authClient.ListPolicies({ policyInstance: { name: "todo" } })
+```
+
+#### Custom Headers
+```ts
+await authClient.ListPolicies(
+  { policyInstance: { name: "todo" } }
+  { headers: { customKey: "customValue" } }
+);
+```

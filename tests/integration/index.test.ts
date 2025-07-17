@@ -3,10 +3,12 @@ import { describe } from "node:test";
 import pino from "pino";
 
 import {
+  Authorizer,
   ConfigError,
   createImportRequest,
   DirectoryServiceV3,
   DirectoryV3,
+  IdentityType,
   ImportMsgCase,
   ImportOpCode,
   LOG_EVENT,
@@ -701,6 +703,153 @@ types:
 
         const directory = DirectoryServiceV3(config);
         directory.objects({ objectType: "user" });
+      });
+    });
+  });
+
+  describe("Authorizer", () => {
+    let authorizerClient: Authorizer;
+
+    beforeEach(async () => {
+      authorizerClient = new Authorizer({
+        authorizerServiceUrl: "https://localhost:8282",
+        caFile: await topaz.caCert(),
+      });
+    });
+
+    describe("DecisionTree", () => {
+      it("returns the correct data structure", async () => {
+        const response = await authorizerClient.DecisionTree({
+          identityContext: {
+            identity: "",
+            type: IdentityType.NONE,
+          },
+          policyInstance: {
+            name: "todo",
+          },
+          policyContext: {
+            path: "todoApp",
+            decisions: ["allowed"],
+          },
+        });
+
+        const expectedResult = {
+          path: {
+            "todoApp.DELETE.todos.__id": { allowed: false },
+            "todoApp.GET.todos": { allowed: true },
+            "todoApp.GET.users.__userID": { allowed: true },
+            "todoApp.POST.todos": { allowed: false },
+            "todoApp.PUT.todos.__id": { allowed: false },
+          },
+          pathRoot: "todoApp",
+        };
+
+        expect(response).toEqual(expectedResult);
+        expect(JSON.parse(JSON.stringify(response))).toEqual(expectedResult);
+      });
+    });
+
+    describe("Is", () => {
+      it("returns the correct data structure", async () => {
+        const response = await authorizerClient.Is({
+          identityContext: {
+            identity: "",
+            type: IdentityType.NONE,
+          },
+          policyInstance: {
+            name: "todo",
+          },
+          policyContext: {
+            path: "todoApp.GET.todos",
+            decisions: ["allowed"],
+          },
+        });
+
+        const expectedResult = true;
+
+        expect(response).toEqual(expectedResult);
+        expect(JSON.parse(JSON.stringify(response))).toEqual(expectedResult);
+      });
+    });
+
+    describe("Query", () => {
+      it("returns the correct data structure", async () => {
+        const response = await authorizerClient.Query({
+          identityContext: {
+            identity: "",
+            type: IdentityType.NONE,
+          },
+          query: "x=data",
+          input: '{"foo": "bar"}',
+        });
+
+        const expectedResult = {
+          result: [
+            {
+              bindings: {
+                x: {
+                  rebac: { check: { allowed: false } },
+                  todoApp: {
+                    DELETE: { todos: { __id: { allowed: false } } },
+                    GET: {
+                      todos: { allowed: true },
+                      users: { __userID: { allowed: true } },
+                    },
+                    POST: { todos: { allowed: false } },
+                    PUT: { todos: { __id: { allowed: false } } },
+                    common: {},
+                  },
+                },
+              },
+              expressions: [
+                { location: { col: 1, row: 1 }, text: "x=data", value: true },
+              ],
+            },
+          ],
+        };
+
+        expect(response).toEqual(expectedResult);
+        expect(JSON.parse(JSON.stringify(response))).toEqual(expectedResult);
+      });
+    });
+
+    describe("ListPolicies", () => {
+      it("returns the correct data structure", async () => {
+        const response = await authorizerClient.ListPolicies({
+          policyInstance: {
+            name: "todo",
+          },
+          fieldMask: {
+            paths: ["id"],
+          },
+        });
+
+        const expectedResult = [
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.DELETE.todos.__id.rego",
+          },
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.GET.todos.rego",
+          },
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.GET.users.__userID.rego",
+          },
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.POST.todos.rego",
+          },
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.PUT.todos.__id.rego",
+          },
+          {
+            id: "todo/github/workspace/content/src/policies/todoApp.common.rego",
+          },
+          { id: "todo/github/workspace/content/src/policies/rebac.check.rego" },
+        ];
+
+        expect(response).toEqual(expect.arrayContaining(expectedResult));
+        expect(JSON.parse(JSON.stringify(response))).toEqual(
+          expect.arrayContaining(expectedResult),
+        );
       });
     });
   });

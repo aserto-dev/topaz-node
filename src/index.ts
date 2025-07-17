@@ -1,3 +1,4 @@
+import { Authorizer } from "./authorizer";
 import {
   createImportRequest,
   DirectoryServiceV3,
@@ -17,6 +18,7 @@ import {
 } from "./util/log";
 
 export {
+  Authorizer,
   createImportRequest,
   DirectoryServiceV3,
   DirectoryV3,
@@ -32,6 +34,7 @@ export {
   setLogEventEmitter,
 };
 
+export * from "./authorizer/types";
 export * from "./directory/v3/types";
 export * from "./util/errors";
 export * from "@bufbuild/protobuf";
