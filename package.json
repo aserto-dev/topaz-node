@@ -1,11 +1,13 @@
 {
   "name": "topaz-node",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "Topaz Node SDK",
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@aserto/node-authorizer": "^0.21.0",
     "@aserto/node-directory": "^0.33.1",
