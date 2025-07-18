@@ -1,19 +1,43 @@
 # topaz-node
 
+A Node.js client for interacting with the Topaz Directory and Authorizer APIs.
+
+---
+
+## Table of Contents
+
+- [Directory](#directory)
+  - [Directory Client](#directory-client)
+  - [Getting Objects and Relations](#getting-objects-and-relations)
+  - [Setting Objects and Relations](#setting-objects-and-relations)
+  - [Checking Permissions and Relations](#checking-permissions-and-relations)
+  - [Manifest](#manifest)
+  - [Import](#import)
+  - [Export](#export)
+  - [Custom Headers](#custom-headers)
+  - [Serializing Data](#serializing-data)
+- [Authorizer](#authorizer)
+  - [Authorizer Client](#authorizer-client)
+  - [Methods](#methods)
+  - [Custom Headers](#custom-headers-1)
+
+---
+
 ## Directory
 
-The Directory APIs can be used to get, set or delete object instances, relation instances and manifests. They can also be used to check whether a user has a permission or relation on an object instance.
+The Directory APIs can be used to get, set, or delete object instances, relation instances, and manifests. They can also be used to check whether a user has a permission or relation on an object instance.
 
 ### Directory Client
 
-```ts
+#### Configuration Types
+
+```typescript
 type ServiceConfig = {
   url?: string;
   tenantId?: string;
   apiKey?: string;
   caFile?: string;
   insecure?: boolean;
-  customHeaders?: { [key: string]: unknown };
 };
 
 export type DirectoryConfig = ServiceConfig & {
@@ -25,6 +49,8 @@ export type DirectoryConfig = ServiceConfig & {
 };
 ```
 
+#### Initialization
+
 You can initialize a directory client as follows:
 
 ```typescript
@@ -34,22 +60,26 @@ const directoryClient = new Directory({
   url: 'localhost:9292',
   caFile: `${process.env.HOME}/.local/share/topaz/certs/grpc-ca.crt`
 });
-
-- `url`: hostname:port of directory service (_required_)
-- `apiKey`: API key for directory service (_required_ if using hosted directory)
-- `tenantId`: Aserto tenant ID (_required_ if using hosted directory)
-- `caFile`: Path to the directory CA file. (optional)
-- `insecure`: Skip server certificate and domain verification(optional, defaults to `false`).
-- `reader`: ServiceConfig for the reader client(optional)
-- `writer`: ServiceConfig for the writer client(option)
-- `importer`: ServiceConfig for the importer client(option)
-- `exporter`: ServiceConfig for the exporter client(option)
-- `model`: ServiceConfig for the model client(option)
 ```
 
-#### Example
-Define a writer client that uses the same credentials but connects to localhost:9393. All other services will have the default configuration
-```ts
+**Parameters:**
+
+- `url`: Hostname:port of directory service (**required**)
+- `apiKey`: API key for directory service (**required** if using hosted directory)
+- `tenantId`: Aserto tenant ID (**required** if using hosted directory)
+- `caFile`: Path to the directory CA file (optional)
+- `insecure`: Skip server certificate and domain verification (optional, defaults to `false`)
+- `reader`: ServiceConfig for the reader client (optional)
+- `writer`: ServiceConfig for the writer client (optional)
+- `importer`: ServiceConfig for the importer client (optional)
+- `exporter`: ServiceConfig for the exporter client (optional)
+- `model`: ServiceConfig for the model client (optional)
+
+#### Example: Custom Writer Client
+
+Define a writer client that uses the same credentials but connects to `localhost:9393`. All other services will have the default configuration:
+
+```typescript
 import { Directory } from "@aserto/aserto-node";
 
 const directoryClient = new Directory({
@@ -62,22 +92,23 @@ const directoryClient = new Directory({
 });
 ```
 
-### Getting objects and relations
+### Getting Objects and Relations
 
-#### 'object' function
+#### `object` function
 
-`object({ objectType: "type-name", objectId: "object-id" }, options?: CallOptions)`:
-
-Get an object instance with the type `type-name` and the id `object-id`. For example:
+Get an object instance with the specified type and id.
 
 ```typescript
 const user = await directoryClient.object({ objectType: 'user', objectId: 'euang@acmecorp.com' });
+```
 
-// Handle a specific Directory Error
-import { NotFoundError } from  "@aserto/aserto-node"
+Handle a specific Directory Error:
+
+```typescript
+import { NotFoundError } from  "@aserto/aserto-node";
 
 try {
-  directoryClient.object({
+  await directoryClient.object({
     objectType: "user",
     objectId: "euang@acmecorp.com",
   });
@@ -89,19 +120,9 @@ try {
 }
 ```
 
-#### 'relation' function
+#### `relation` function
 
-```typescript
-  relation({
-    subjectType:  'subject-type',
-    subjectId: 'subject-id',
-    relation: 'relation-name',
-    objectType: 'object-type',
-    objectId: 'object-id',
-  })
-```
-
-Get an relation of a certain type between as subject and an object. For example:
+Get a relation of a certain type between a subject and an object.
 
 ```typescript
 const identity = 'euang@acmecorp.com';
@@ -109,49 +130,45 @@ const relation = await directoryClient.relation({
   subjectType: 'user',
   subjectId: 'euang@acmecorp.com',
   relation: 'identifier',
-  objectType: 'identity'
+  objectType: 'identity',
   objectId: identity
 });
 ```
 
-#### 'relations' function
+#### `relations` function
+
+Get all relations of a certain type for a given object.
 
 ```typescript
-  relations({
-    subjectType:  'subject-type',
-    relation: 'relation-name',
-    objectType: 'object-type',
-    objectId: 'object-id',
-  })
+const relations = await directoryClient.relations({
+  subjectType: 'subject-type',
+  relation: 'relation-name',
+  objectType: 'object-type',
+  objectId: 'object-id',
+});
 ```
 
-### Setting objects and relations
+### Setting Objects and Relations
 
-#### 'setObject' function
+#### `setObject` function
 
-`setObject({ object: $Object }, options?: CallOptions)`:
-
-Create an object instance with the specified fields. For example:
+Create an object instance with the specified fields.
 
 ```typescript
-const user = await directoryClient.setObject(
-  {
-    object: {
-      type: "user",
-      id: "test-object",
-      properties: {
-        displayName: "test object"
-      }
+const user = await directoryClient.setObject({
+  object: {
+    type: "user",
+    id: "test-object",
+    properties: {
+      displayName: "test object"
     }
   }
-);
+});
 ```
 
-#### 'setRelation' function
+#### `setRelation` function
 
-`setRelation({ relation: Relation }, options?: CallOptions)`:
-
-Create a relation with a specified name between two objects. For example:
+Create a relation with a specified name between two objects.
 
 ```typescript
 const relation = await directoryClient.setRelation({
@@ -163,22 +180,17 @@ const relation = await directoryClient.setRelation({
 });
 ```
 
-#### 'deleteObject' function
+#### `deleteObject` function
 
-`deleteObject({ objectType: "type-name", objectId: "object-id", withRelations: false }, options?: CallOptions)`:
-
-Deletes an object instance with the specified type and key. For example:
+Delete an object instance with the specified type and key.
 
 ```typescript
 await directoryClient.deleteObject({ objectType: 'user', objectId: 'euang@acmecorp.com' });
 ```
 
+#### `deleteRelation` function
 
-#### 'deleteRelation' function
-
-`deleteRelation({ objectType: string, objectId: string, relation: string, subjectType: string, subjectId: string, subjectRelation: string })`:
-
-Delete a relation:
+Delete a relation between two objects.
 
 ```typescript
 await directoryClient.deleteRelation({
@@ -190,15 +202,13 @@ await directoryClient.deleteRelation({
 });
 ```
 
-### Checking permissions and relations
+### Checking Permissions and Relations
 
-You can evaluate graph queries over the directory, to determine whether a subject (e.g. user) has a permission or a relation to an object instance.
+You can evaluate graph queries over the directory to determine whether a subject (e.g., user) has a permission or a relation to an object instance.
 
-#### 'check' function
+#### `check` function
 
-`check({ objectType: string, objectId: string, relation: string, subjectType: string, subjectId: string, trace: boolean }, options?: CallOptions)`:
-
-Check that an `user` object with the key `euang@acmecorp.com` has the `read` permission in the `admin` group:
+Check that a `user` object with the key `euang@acmecorp.com` has the `read` permission in the `admin` group:
 
 ```typescript
 const check = await directoryClient.check({
@@ -207,18 +217,6 @@ const check = await directoryClient.check({
   relation: 'read',
   objectType: 'group',
   objectId: 'admin',
-});
-```
-
-Check that `euang@acmecorp.com` has an `identifier` relation to an object with key `euang@acmecorp.com` and type `identity`:
-
-```typescript
-const check = directoryClient.check({
-  subjectId: 'euang@acmecorp.com',
-  subjectType: 'user',
-  relation: 'identifier',
-  objectType: 'identity',
-  objectId: 'euang@acmecorp.com',
 });
 ```
 
@@ -249,15 +247,15 @@ const user = await directoryClient.object(
 
 You can get, set, or delete the manifest
 
-#### 'getManifest' function
+#### `getManifest` function
 
-```ts
+```typescript
 await directoryClient.getManifest();
 ```
 
-#### 'setManifest' function
+#### `setManifest` function
 
-```ts
+```typescript
 await directoryClient.setManifest(`
 # yaml-language-server: $schema=https://www.topaz.sh/schema/manifest.json
 ---
@@ -289,15 +287,15 @@ types:
 `);
 ```
 
-#### 'deleteManifest' function
+#### `deleteManifest` function
 
-```ts
+```typescript
 await directoryClient.deleteManifest();
 ```
 
 ### Import
 
-```ts
+```typescript
 import { ImportMsgCase, ImportOpCode, createImportRequest } from "@aserto/aserto-node"
 const importRequest = createImportRequest([
   {
@@ -345,7 +343,7 @@ await (readAsyncIterable(resp))
 
 ### Export
 
-```ts
+```typescript
 const response = await readAsyncIterable(
   await directoryClient.export({ options: "DATA" })
 )
@@ -355,7 +353,7 @@ const response = await readAsyncIterable(
 
 ### Custom Headers
 
-```ts
+```typescript
 // passing custom headers to a request
 const user = await directoryClient.object(
   {
@@ -375,7 +373,7 @@ const user = await directoryClient.object(
 Use [Protocol Buffers](https://github.com/bufbuild/protobuf-es) to serialize data.
 
 
-```ts
+```typescript
 import { GetObjectsResponseSchema, toJson } from "@aserto/aserto-node";
 
 const objects = await directoryClient.objects({objectType: "user"});
@@ -386,7 +384,7 @@ const json = toJson(GetObjectsResponseSchema, objects)
 ## Authorizer
 
 ### Authorizer Client
-```ts
+```typescript
 interface Authorizer {
   config: AuthorizerConfig,
 };
@@ -398,25 +396,23 @@ type AuthorizerConfig = {
   token?: string;
   caFile?: string;
   insecure?: boolean;
-  customHeaders?: { [key: string]: unknown };
-
 };
 ```
-```ts
+```typescript
 const authClient = new Authorizer({
   authorizerServiceUrl: "localhost:8282",
   caFile: `${process.env.HOME}/.local/share/topaz/certs/grpc-ca.crt`
 });
 ```
 
-- `authorizerServiceUrl`: hostname:port of authorizer service (_required_)
-- `authorizerApiKey`: API key for authorizer service (_required_ if using hosted authorizer)
-- `tenantId`: Aserto tenant ID (_required_ if using hosted authorizer)
-- `caFile`: Path to the authorizer CA file. (optional)
-- `insecure`: Skip server certificate and domain verification. (NOT SECURE!). Defaults to `false`.
+- `authorizerServiceUrl`: Hostname:port of authorizer service (**required**)
+- `authorizerApiKey`: API key for authorizer service (**required** if using hosted authorizer)
+- `tenantId`: Aserto tenant ID (**required** if using hosted authorizer)
+- `caFile`: Path to the authorizer CA file (optional)
+- `insecure`: Skip server certificate and domain verification (optional, defaults to `false`)
 
 #### Example:
-```ts
+```typescript
 import {
   Authorizer,
   identityContext,
@@ -453,7 +449,7 @@ authClient
 ```
 
 ### Methods
-```ts
+```typescript
 // Is
 // (method) Authorizer.Is(params: IsRequest, options?: CallOptions): Promise<boolean>
 await authClient
@@ -526,7 +522,7 @@ await authClient.ListPolicies({ policyInstance: { name: "todo" } })
 ```
 
 #### Custom Headers
-```ts
+```typescript
 await authClient.ListPolicies(
   { policyInstance: { name: "todo" } }
   { headers: { customKey: "customValue" } }
