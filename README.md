@@ -54,7 +54,7 @@ export type DirectoryConfig = ServiceConfig & {
 You can initialize a directory client as follows:
 
 ```typescript
-import { Directory } from "@aserto/aserto-node";
+import { Directory } from "topaz-node";
 
 const directoryClient = new Directory({
   url: 'localhost:9292',
@@ -80,7 +80,7 @@ const directoryClient = new Directory({
 Define a writer client that uses the same credentials but connects to `localhost:9393`. All other services will have the default configuration:
 
 ```typescript
-import { Directory } from "@aserto/aserto-node";
+import { Directory } from "topaz-node";
 
 const directoryClient = new Directory({
   url: 'localhost:9292',
@@ -105,7 +105,7 @@ const user = await directoryClient.object({ objectType: 'user', objectId: 'euang
 Handle a specific Directory Error:
 
 ```typescript
-import { NotFoundError } from  "@aserto/aserto-node";
+import { NotFoundError } from  "topaz-node";
 
 try {
   await directoryClient.object({
@@ -296,7 +296,7 @@ await directoryClient.deleteManifest();
 ### Import
 
 ```typescript
-import { ImportMsgCase, ImportOpCode, createImportRequest } from "@aserto/aserto-node"
+import { ImportMsgCase, ImportOpCode, createImportRequest } from "topaz-node"
 const importRequest = createImportRequest([
   {
     opCode: ImportOpCode.SET,
@@ -374,7 +374,7 @@ Use [Protocol Buffers](https://github.com/bufbuild/protobuf-es) to serialize dat
 
 
 ```typescript
-import { GetObjectsResponseSchema, toJson } from "@aserto/aserto-node";
+import { GetObjectsResponseSchema, toJson } from "topaz-node";
 
 const objects = await directoryClient.objects({objectType: "user"});
 const json = toJson(GetObjectsResponseSchema, objects)
@@ -418,7 +418,7 @@ import {
   identityContext,
   policyContext,
   policyInstance,
-} from "@aserto/aserto-node";
+} from "topaz-node";
 
 const authClient = new Authorizer(
   {
