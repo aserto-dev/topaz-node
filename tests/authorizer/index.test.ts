@@ -59,7 +59,7 @@ describe("Is", () => {
       options,
     );
 
-    expect(result).toBe(true);
+    expect(result).toEqual({ decisions: [{ decision: "", is: true }] });
 
     mock.mockReset();
   });
@@ -103,7 +103,7 @@ describe("Is", () => {
       undefined,
     );
 
-    expect(result).toBe(true);
+    expect(result).toEqual({ decisions: [{ decision: "", is: true }] });
 
     mock.mockReset();
   });
@@ -146,7 +146,7 @@ describe("Is", () => {
       },
       undefined,
     );
-    expect(result).toBe(true);
+    expect(result).toEqual({ decisions: [{ decision: "", is: true }] });
 
     mock.mockReset();
   });
@@ -187,7 +187,7 @@ describe("Is", () => {
       undefined,
     );
 
-    expect(result).toBe(false);
+    expect(result).toEqual({ decisions: [{ decision: "", is: false }] });
 
     mock.mockReset();
   });
@@ -201,7 +201,7 @@ describe("Is", () => {
 
     const result = await authorizer.Is({});
 
-    expect(result).toBe(false);
+    expect(result).toEqual({ decisions: [{ decision: "", is: false }] });
 
     mock.mockRestore();
   });
