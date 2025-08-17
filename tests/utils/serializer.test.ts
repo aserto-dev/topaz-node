@@ -1,19 +1,22 @@
 // Unit tests for: serializeResponse
 
-import { GetObjectResponse } from "@aserto/node-directory/src/gen/cjs/aserto/directory/reader/v3/reader_pb";
+import {
+  file_aserto_directory_reader_v3_reader,
+  GetObjectResponse,
+} from "@aserto/node-directory/src/gen/cjs/aserto/directory/reader/v3/reader_pb";
 
-import { DsRegistry, InvalidSchemaError } from "../../../src";
+import { InvalidSchemaError, TopazRegistry } from "../../src";
 
 // Mock types
 type MockGenMessage = {
   $typeName: string;
 };
 
-describe("DsRegistry.serializeResponse()", () => {
-  let dsRegistry: DsRegistry;
+describe("TopazRegistry.serializeResponse()", () => {
+  let topazRegistry: TopazRegistry;
 
   beforeEach(() => {
-    dsRegistry = new DsRegistry();
+    topazRegistry = new TopazRegistry(file_aserto_directory_reader_v3_reader);
   });
 
   it("serializes a valid response successfully", () => {
@@ -29,7 +32,7 @@ describe("DsRegistry.serializeResponse()", () => {
       relations: [],
     };
 
-    const result = dsRegistry.serializeResponse(mockResponse);
+    const result = topazRegistry.serializeResponse(mockResponse);
 
     expect(result).toEqual({
       relations: [],
@@ -47,7 +50,7 @@ describe("DsRegistry.serializeResponse()", () => {
       $typeName: "invalid.type.name",
     };
 
-    expect(() => dsRegistry.serializeResponse(mockResponse)).toThrow(
+    expect(() => topazRegistry.serializeResponse(mockResponse)).toThrow(
       new InvalidSchemaError(
         "schema not registered for type: [invalid.type.name]",
       ),

@@ -6,7 +6,6 @@ import {
   readAsyncIterable,
   serializeAsyncIterable,
 } from "./directory";
-import { DsRegistry } from "./directory/serializer";
 import { Opcode } from "./directory/types";
 import { handleError } from "./util/connect";
 import {
@@ -15,12 +14,12 @@ import {
   LOG_LEVELS,
   setLogEventEmitter,
 } from "./util/log";
+import { TopazRegistry } from "./util/serializer";
 
 export {
   Authorizer,
   createImportRequest,
   Directory,
-  DsRegistry,
   getLogEventEmitter,
   handleError,
   ImportMsgCase,
@@ -30,6 +29,7 @@ export {
   readAsyncIterable,
   serializeAsyncIterable,
   setLogEventEmitter,
+  TopazRegistry,
 };
 
 export * from "./authorizer/types";

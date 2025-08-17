@@ -11,19 +11,10 @@ import {
   toJson,
 } from "@bufbuild/protobuf";
 import { GenMessage } from "@bufbuild/protobuf/codegenv1";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 
 import { InvalidSchemaError } from "../util/errors";
-import {
-  file_aserto_authorizer_v2_api_decision_logs,
-  file_aserto_authorizer_v2_api_identity_context,
-  file_aserto_authorizer_v2_api_module,
-  file_aserto_authorizer_v2_api_policy_context,
-  file_aserto_authorizer_v2_api_policy_instance,
-  file_aserto_authorizer_v2_authorizer,
-} from "./types";
 
-class AuthorizerRegistry {
+class TopazRegistry {
   registry: Registry;
 
   constructor(
@@ -36,16 +27,7 @@ class AuthorizerRegistry {
       | Registry
     )[]
   ) {
-    this.registry = createRegistry(
-      file_aserto_authorizer_v2_api_decision_logs,
-      file_aserto_authorizer_v2_api_identity_context,
-      file_aserto_authorizer_v2_api_module,
-      file_aserto_authorizer_v2_api_policy_instance,
-      file_aserto_authorizer_v2_api_policy_context,
-      file_aserto_authorizer_v2_authorizer,
-      file_google_protobuf_timestamp,
-      ...input,
-    );
+    this.registry = createRegistry(...input);
   }
 
   serializeResponse<T extends Message>(
@@ -64,4 +46,4 @@ class AuthorizerRegistry {
   }
 }
 
-export { AuthorizerRegistry };
+export { TopazRegistry };
