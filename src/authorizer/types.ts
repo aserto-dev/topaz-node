@@ -1,4 +1,5 @@
 import { IdentityContext as IdentityContext$ } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/identity_context_pb";
+import { Module as Module$ } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/module_pb";
 import { PolicyContext as PolicyContext$ } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/policy_context_pb";
 import { PolicyInstance as PolicyInstance$ } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/policy_instance_pb";
 import {
@@ -20,12 +21,12 @@ export {
   DecisionPolicySchema,
   DecisionUser,
   DecisionUserSchema,
+  file_aserto_authorizer_v2_api_decision_logs,
 } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/decision_logs_pb";
 export * from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/identity_context_pb";
 export * from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/module_pb";
 export * from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/policy_context_pb";
 export * from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/policy_instance_pb";
-import { Module as Module$ } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/api/module_pb";
 export * from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/authorizer_pb";
 
 export type DecisionTreeRequest = Omit<

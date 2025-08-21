@@ -764,7 +764,9 @@ types:
           },
         });
 
-        const expectedResult = true;
+        const expectedResult = {
+          decisions: [{ decision: "allowed", is: true }],
+        };
 
         expect(response).toEqual(expectedResult);
         expect(JSON.parse(JSON.stringify(response))).toEqual(expectedResult);

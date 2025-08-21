@@ -3,7 +3,9 @@ import { readFileSync } from "fs";
 import {
   Authorizer as AuthorizerClient,
   DecisionTreeRequestSchema,
+  file_aserto_authorizer_v2_authorizer,
   IsRequestSchema,
+  IsResponse,
   QueryRequestSchema,
 } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/authorizer_pb";
 import {
@@ -11,7 +13,17 @@ import {
   IsRequest as IsRequest$,
   QueryRequest as QueryRequest$,
 } from "@aserto/node-authorizer/src/gen/cjs/aserto/authorizer/v2/authorizer_pb";
-import { create, JsonObject } from "@bufbuild/protobuf";
+import {
+  create,
+  DescEnum,
+  DescExtension,
+  DescFile,
+  DescMessage,
+  DescService,
+  JsonObject,
+  Registry,
+} from "@bufbuild/protobuf";
+import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import {
   CallOptions,
   Client,
@@ -21,8 +33,14 @@ import {
 import { createGrpcTransport } from "@connectrpc/connect-node";
 
 import { handleError, setHeader, traceMessage } from "../util/connect";
+import { TopazRegistry } from "../util/serializer";
 import {
   DecisionTreeRequest,
+  file_aserto_authorizer_v2_api_decision_logs,
+  file_aserto_authorizer_v2_api_identity_context,
+  file_aserto_authorizer_v2_api_module,
+  file_aserto_authorizer_v2_api_policy_context,
+  file_aserto_authorizer_v2_api_policy_instance,
   IsRequest,
   ListPoliciesRequest,
   Module,
@@ -30,6 +48,15 @@ import {
 } from "./types";
 
 type AuthorizerConfig = {
+  additionalDescriptors?: (
+    | DescEnum
+    | DescExtension
+    | DescFile
+    | DescMessage
+    | DescService
+    | Registry
+  )[];
+} & {
   authorizerServiceUrl?: string;
   tenantId?: string;
   authorizerApiKey?: string;
@@ -47,6 +74,7 @@ type Path = {
 };
 export class Authorizer {
   AuthClient: Client<typeof AuthorizerClient>;
+  registry: TopazRegistry;
   constructor(config: AuthorizerConfig) {
     const baseServiceHeaders: Interceptor = (next) => async (req) => {
       config.token && setHeader(req, "authorization", `${config.token}`);
@@ -79,9 +107,19 @@ export class Authorizer {
     });
 
     this.AuthClient = createClient(AuthorizerClient, baseGrpcTransport);
+    this.registry = new TopazRegistry(
+      file_aserto_authorizer_v2_api_decision_logs,
+      file_aserto_authorizer_v2_api_identity_context,
+      file_aserto_authorizer_v2_api_module,
+      file_aserto_authorizer_v2_api_policy_instance,
+      file_aserto_authorizer_v2_api_policy_context,
+      file_aserto_authorizer_v2_authorizer,
+      file_google_protobuf_timestamp,
+      ...(config.additionalDescriptors || []),
+    );
   }
 
-  async Is(params: IsRequest, options?: CallOptions): Promise<boolean> {
+  async Is(params: IsRequest, options?: CallOptions): Promise<IsResponse> {
     try {
       const request: IsRequest$ = create(IsRequestSchema, {
         ...params,
@@ -90,10 +128,9 @@ export class Authorizer {
           instanceLabel: params.policyInstance?.name,
         },
       });
-      const response = await this.AuthClient.is(request, options);
 
-      const allowed = response.decisions[0]?.is;
-      return !!allowed;
+      const response = await this.AuthClient.is(request, options);
+      return this.registry.serializeResponse(response);
     } catch (error) {
       throw handleError(error, "Is");
     }

@@ -451,7 +451,7 @@ authClient
 ### Methods
 ```typescript
 // Is
-// (method) Authorizer.Is(params: IsRequest, options?: CallOptions): Promise<boolean>
+// (method) Authorizer.Is(params: IsRequest, options?: CallOptions): Promise<IsResponse>
 await authClient
   .Is({
     identityContext: {

@@ -3,13 +3,16 @@ import { readFileSync } from "fs";
 import {
   Exporter,
   ExportRequestSchema,
+  file_aserto_directory_exporter_v3_exporter,
 } from "@aserto/node-directory/src/gen/cjs/aserto/directory/exporter/v3/exporter_pb";
 import {
+  file_aserto_directory_importer_v3_importer,
   Importer,
   ImportRequest,
   ImportRequestSchema,
 } from "@aserto/node-directory/src/gen/cjs/aserto/directory/importer/v3/importer_pb";
 import {
+  file_aserto_directory_model_v3_model,
   MetadataSchema,
   Model,
   SetManifestRequestSchema,
@@ -22,6 +25,7 @@ import {
 import {
   CheckRequestSchema,
   ChecksRequestSchema,
+  file_aserto_directory_reader_v3_reader,
   GetGraphRequestSchema,
   GetObjectManyRequestSchema,
   GetObjectRequestSchema,
@@ -32,11 +36,13 @@ import {
 import {
   DeleteObjectRequestSchema,
   DeleteRelationRequestSchema,
+  file_aserto_directory_writer_v3_writer,
   SetObjectRequestSchema,
   SetRelationRequestSchema,
   Writer,
 } from "@aserto/node-directory/src/gen/cjs/aserto/directory/writer/v3/writer_pb";
 import { create, JsonObject, Message } from "@bufbuild/protobuf";
+import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import {
   CallOptions,
   Client,
@@ -53,6 +59,7 @@ import {
   setHeader,
   traceMessage,
 } from "../util/connect";
+import { TopazRegistry } from "../util/serializer";
 import {
   nullExporterProxy,
   nullImporterProxy,
@@ -60,7 +67,6 @@ import {
   nullReaderProxy,
   nullWriterProxy,
 } from "./null";
-import { DsRegistry } from "./serializer";
 import {
   CheckRequest,
   CheckResponse,
@@ -74,6 +80,7 @@ import {
   DirectoryConfig,
   ExportOptions,
   ExportResponse,
+  file_aserto_directory_common_v3_common,
   GetGraphRequest,
   GetGraphResponse,
   GetManifestRequest,
@@ -137,7 +144,7 @@ export class Directory {
   ImporterClient: Client<typeof Importer>;
   ExporterClient: Client<typeof Exporter>;
   ModelClient: Client<typeof Model>;
-  registry: DsRegistry;
+  registry: TopazRegistry;
 
   CreateTransport: (
     config: ServiceConfig | undefined,
@@ -282,7 +289,16 @@ export class Directory {
       : nullModelProxy();
 
     this.CreateTransport = createTransport;
-    this.registry = new DsRegistry(...(config.additionalDescriptors || []));
+    this.registry = new TopazRegistry(
+      file_aserto_directory_common_v3_common,
+      file_aserto_directory_reader_v3_reader,
+      file_aserto_directory_writer_v3_writer,
+      file_aserto_directory_exporter_v3_exporter,
+      file_aserto_directory_importer_v3_importer,
+      file_aserto_directory_model_v3_model,
+      file_google_protobuf_timestamp,
+      ...(config.additionalDescriptors || []),
+    );
   }
 
   async check(
@@ -653,7 +669,15 @@ export async function readAsyncIterable<T>(
 export async function serializeAsyncIterable<T extends Message>(
   gen: AsyncIterable<T>,
 ): Promise<T[]> {
-  const registry = new DsRegistry();
+  const registry = new TopazRegistry(
+    file_aserto_directory_common_v3_common,
+    file_aserto_directory_reader_v3_reader,
+    file_aserto_directory_writer_v3_writer,
+    file_aserto_directory_exporter_v3_exporter,
+    file_aserto_directory_importer_v3_importer,
+    file_aserto_directory_model_v3_model,
+    file_google_protobuf_timestamp,
+  );
   const out: T[] = [];
   for await (const x of gen) {
     out.push(registry.serializeResponse<T>(x));
