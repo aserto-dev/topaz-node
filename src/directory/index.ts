@@ -206,12 +206,15 @@ export class Directory {
       const nodeOptions = createNodeOptions(config);
       let customHeaders = Object.assign({}, fallback?.customHeaders || {});
       customHeaders = Object.assign(customHeaders, config?.customHeaders || {});
+      const http2SessionOptions =
+        config?.http2SessionOptions || fallback?.http2SessionOptions;
 
       if (
         serviceUrl !== baseServiceUrl ||
         apiKey !== baseApiKey ||
         tenantId !== baseTenantId ||
-        nodeOptions !== baseNodeOptions
+        nodeOptions !== baseNodeOptions ||
+        http2SessionOptions !== baseHttp2SessionOptions
       ) {
         const interceptors = [createHeadersInterceptor(apiKey, tenantId)];
         if (process.env.NODE_TRACE_MESSAGE) {
@@ -222,6 +225,7 @@ export class Directory {
           baseUrl: serviceUrl || "https://localhost:9292",
           interceptors: interceptors,
           nodeOptions: nodeOptions,
+          ...config?.http2SessionOptions,
         });
       }
       return baseGrpcTransport;
@@ -241,9 +245,9 @@ export class Directory {
     }
 
     const baseServiceUrl = config.url;
-
     const baseApiKey = config.apiKey;
     const baseTenantId = config.tenantId;
+    const baseHttp2SessionOptions = config.http2SessionOptions;
     const baseCaFile = !!config.caFile
       ? readFileSync(config.caFile)
       : undefined;
@@ -260,9 +264,10 @@ export class Directory {
     const baseGrpcTransport =
       !!config.url || (!!config.apiKey && !!config.tenantId)
         ? createGrpcTransport({
-            baseUrl: baseServiceUrl || "https://localhost:9292",
+            baseUrl: config.url || "https://localhost:9292",
             interceptors: interceptors,
             nodeOptions: baseNodeOptions,
+            ...config?.http2SessionOptions,
           })
         : undefined;
 

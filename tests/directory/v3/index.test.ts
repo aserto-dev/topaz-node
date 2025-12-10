@@ -48,6 +48,7 @@ describe("Directory", () => {
       customHeaders: {
         foo: "bar",
       },
+      idleConnectionTimeoutMs: 60000,
     };
     const directory = new Directory(config);
 
@@ -75,6 +76,7 @@ describe("Directory", () => {
       customHeaders: {
         base: "bar",
       },
+      idleConnectionTimeoutMs: 60000,
       reader: {
         url: "https://readerUrl",
         apiKey: "readerApiKey",
@@ -83,6 +85,7 @@ describe("Directory", () => {
         customHeaders: {
           reader: "bar",
         },
+        idleConnectionTimeoutMs: 60000,
       },
       writer: {
         url: "https://writerUrl",
@@ -91,19 +94,23 @@ describe("Directory", () => {
         customHeaders: {
           writer: "bar",
         },
+        idleConnectionTimeoutMs: 60000,
       },
       importer: {
         url: "https://importerUrl",
         apiKey: "importerApiKey",
         tenantId: "importerTenantId",
+        idleConnectionTimeoutMs: 60000,
       },
       exporter: {
         caFile: "exporterCaFile",
         customHeaders: {},
+        idleConnectionTimeoutMs: 60000,
       },
       model: {
         apiKey: "modelApiKey",
         tenantId: "modelTenantId",
+        idleConnectionTimeoutMs: 60000,
       },
       rejectUnauthorized: true,
     };
@@ -119,6 +126,7 @@ describe("Directory", () => {
             ca: "caFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
       [
@@ -129,6 +137,7 @@ describe("Directory", () => {
             ca: "readerCaFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
       [
@@ -139,6 +148,7 @@ describe("Directory", () => {
             ca: "caFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
       [
@@ -149,6 +159,7 @@ describe("Directory", () => {
             ca: "caFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
       [
@@ -159,6 +170,7 @@ describe("Directory", () => {
             ca: "exporterCaFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
       [
@@ -169,6 +181,7 @@ describe("Directory", () => {
             ca: "caFile",
             rejectUnauthorized: true,
           },
+          idleConnectionTimeoutMs: 60000,
         }),
       ],
     ]);
@@ -189,6 +202,7 @@ describe("Directory", () => {
       url: "localhost:9292",
       tenantId: "tenantId",
       apiKey: "apiKey",
+      idleConnectionTimeoutMs: 60000,
       reader: {
         url: "readerUrl",
         apiKey: "readerApiKey",
