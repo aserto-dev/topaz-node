@@ -264,7 +264,7 @@ export class Directory {
     const baseGrpcTransport =
       !!config.url || (!!config.apiKey && !!config.tenantId)
         ? createGrpcTransport({
-            baseUrl: config.url || "https://localhost:9292",
+            baseUrl: baseServiceUrl || "https://localhost:9292",
             interceptors: interceptors,
             nodeOptions: baseNodeOptions,
             ...config?.http2SessionOptions,
