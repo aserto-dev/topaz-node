@@ -14,6 +14,7 @@ import {
   DeleteObjectResponseSchema,
   DeleteRelationResponseSchema,
   Directory,
+  DirectoryConfig,
   EtagMismatchError,
   ExportResponseSchema,
   GetGraphResponseSchema,
@@ -26,7 +27,6 @@ import {
   ImportResponseSchema,
   InvalidArgumentError,
   NotFoundError,
-  ServiceConfig,
   SetManifestResponseSchema,
   SetObjectResponseSchema,
   SetRelationResponseSchema,
@@ -69,7 +69,7 @@ describe("Directory", () => {
         return path as string;
       });
 
-    const config: ServiceConfig = {
+    const config: DirectoryConfig = {
       url: "https://localhost:9292",
       tenantId: "tenantId",
       apiKey: "apiKey",
@@ -125,7 +125,7 @@ describe("Directory", () => {
           idleConnectionTimeoutMs: 60000,
         },
       },
-      rejectUnauthorized: true,
+      insecure: false,
     };
 
     const directory = new Directory(config);
