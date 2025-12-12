@@ -26,6 +26,7 @@ import {
   ImportResponseSchema,
   InvalidArgumentError,
   NotFoundError,
+  ServiceConfig,
   SetManifestResponseSchema,
   SetObjectResponseSchema,
   SetRelationResponseSchema,
@@ -68,7 +69,7 @@ describe("Directory", () => {
         return path as string;
       });
 
-    const config = {
+    const config: ServiceConfig = {
       url: "https://localhost:9292",
       tenantId: "tenantId",
       apiKey: "apiKey",
@@ -76,7 +77,9 @@ describe("Directory", () => {
       customHeaders: {
         base: "bar",
       },
-      idleConnectionTimeoutMs: 60000,
+      http2SessionOptions: {
+        idleConnectionTimeoutMs: 60000,
+      },
       reader: {
         url: "https://readerUrl",
         apiKey: "readerApiKey",
@@ -85,7 +88,9 @@ describe("Directory", () => {
         customHeaders: {
           reader: "bar",
         },
-        idleConnectionTimeoutMs: 60000,
+        http2SessionOptions: {
+          idleConnectionTimeoutMs: 60000,
+        },
       },
       writer: {
         url: "https://writerUrl",
@@ -94,23 +99,31 @@ describe("Directory", () => {
         customHeaders: {
           writer: "bar",
         },
-        idleConnectionTimeoutMs: 60000,
+        http2SessionOptions: {
+          idleConnectionTimeoutMs: 60000,
+        },
       },
       importer: {
         url: "https://importerUrl",
         apiKey: "importerApiKey",
         tenantId: "importerTenantId",
-        idleConnectionTimeoutMs: 60000,
+        http2SessionOptions: {
+          idleConnectionTimeoutMs: 60000,
+        },
       },
       exporter: {
         caFile: "exporterCaFile",
         customHeaders: {},
-        idleConnectionTimeoutMs: 60000,
+        http2SessionOptions: {
+          idleConnectionTimeoutMs: 60000,
+        },
       },
       model: {
         apiKey: "modelApiKey",
         tenantId: "modelTenantId",
-        idleConnectionTimeoutMs: 60000,
+        http2SessionOptions: {
+          idleConnectionTimeoutMs: 60000,
+        },
       },
       rejectUnauthorized: true,
     };

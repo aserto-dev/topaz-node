@@ -225,7 +225,7 @@ export class Directory {
           baseUrl: serviceUrl || "https://localhost:9292",
           interceptors: interceptors,
           nodeOptions: nodeOptions,
-          ...config?.http2SessionOptions,
+          ...http2SessionOptions,
         });
       }
       return baseGrpcTransport;
@@ -267,7 +267,7 @@ export class Directory {
             baseUrl: baseServiceUrl || "https://localhost:9292",
             interceptors: interceptors,
             nodeOptions: baseNodeOptions,
-            ...config?.http2SessionOptions,
+            ...baseHttp2SessionOptions,
           })
         : undefined;
 
