@@ -56,6 +56,7 @@ import {
   Registry,
 } from "@bufbuild/protobuf";
 import { Timestamp } from "@bufbuild/protobuf/wkt";
+import { Http2SessionOptions } from "@connectrpc/connect-node";
 
 import { NestedOmit, NestedOptional, Optional } from "../util/types";
 
@@ -276,6 +277,7 @@ export type ServiceConfig = {
   caFile?: string;
   insecure?: boolean;
   customHeaders?: CustomHeaders;
+  http2SessionOptions?: Http2SessionOptions;
 };
 export type SetManifestResponse = Omit<
   SetManifestResponse$,

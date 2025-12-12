@@ -30,7 +30,10 @@ import {
   createClient,
   Interceptor,
 } from "@connectrpc/connect";
-import { createGrpcTransport } from "@connectrpc/connect-node";
+import {
+  createGrpcTransport,
+  Http2SessionOptions,
+} from "@connectrpc/connect-node";
 
 import { handleError, setHeader, traceMessage } from "../util/connect";
 import { TopazRegistry } from "../util/serializer";
@@ -65,6 +68,7 @@ type AuthorizerConfig = {
   caFile?: string;
   insecure?: boolean;
   customHeaders?: { [key: string]: unknown };
+  http2SessionOptions?: Http2SessionOptions;
 };
 
 type Path = {
@@ -104,6 +108,7 @@ export class Authorizer {
       baseUrl: serviceUrl,
       interceptors: interceptors,
       nodeOptions: baseNodeOptions,
+      ...config?.http2SessionOptions,
     });
 
     this.AuthClient = createClient(AuthorizerClient, baseGrpcTransport);
